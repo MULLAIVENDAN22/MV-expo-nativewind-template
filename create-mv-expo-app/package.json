@@ -1,0 +1,20 @@
+{
+  "name": "create-mv-expo-app",
+  "version": "1.0.0",
+  "description": "Create Expo + NativeWind app by MV",
+  "bin": {
+    "create-mv-expo-app": "index.js"
+  },
+  "keywords": [
+    "expo",
+    "react-native",
+    "nativewind",
+    "template"
+  ],
+  "author": "Mullaivendan K",
+  "license": "MIT",
+  "dependencies": {
+    "degit": "^2.8.4",
+    "fs-extra": "^11.2.0"
+  }
+}
