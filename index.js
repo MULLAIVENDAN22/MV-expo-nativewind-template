@@ -32,7 +32,7 @@ function normalizeName(name) {
 async function main() {
   let appNameInput = process.argv.slice(2).join(" ").trim();
 
-  // ✅ If user gives NOTHING → ask
+  // Ask app name if not provided
   if (!appNameInput) {
     appNameInput = await askQuestion("📦 What is your app name? ");
   }
@@ -46,16 +46,19 @@ async function main() {
   const targetDir = path.join(process.cwd(), appName);
 
   if (fs.existsSync(targetDir)) {
-    console.log("❌ Folder already exists:", appName);
+    console.log(`❌ Folder already exists: ${appName}`);
     process.exit(1);
   }
 
-  console.log("🚀 Creating app:", appName);
+  console.log(`🚀 Creating Expo app with NativeWind + Gluestack: ${appName}`);
 
-  // copy template
-  fs.copySync(path.join(__dirname, "template"), targetDir);
+  /* ---------- copy template ---------- */
 
-  // update package.json
+  const templateDir = path.join(__dirname, "template");
+  fs.copySync(templateDir, targetDir);
+
+  /* ---------- update package.json ---------- */
+
   const pkgPath = path.join(targetDir, "package.json");
   if (fs.existsSync(pkgPath)) {
     const pkg = fs.readJsonSync(pkgPath);
@@ -63,24 +66,39 @@ async function main() {
     fs.writeJsonSync(pkgPath, pkg, { spaces: 2 });
   }
 
-  // update app.json
+  /* ---------- update app.json ---------- */
+
   const appJsonPath = path.join(targetDir, "app.json");
   if (fs.existsSync(appJsonPath)) {
     const appJson = fs.readJsonSync(appJsonPath);
 
     if (appJson.expo) {
-      appJson.expo.name = appNameInput.trim(); // display name (spaces OK)
-      appJson.expo.slug = appName;             // kebab-case
+      appJson.expo.name = appNameInput.trim(); // Display name
+      appJson.expo.slug = appName;             // URL-safe name
     }
 
     fs.writeJsonSync(appJsonPath, appJson, { spaces: 2 });
   }
 
-  console.log("✅ App created successfully!\n");
-  console.log("Next steps:");
+  /* ---------- done ---------- */
+
+  console.log("\n✅ App created successfully!");
+  console.log("\nIncluded:");
+  console.log("  • Expo");
+  console.log("  • TypeScript");
+  console.log("  • NativeWind (Tailwind CSS for React Native)");
+  console.log("  • Gluestack UI (provider only)");
+  console.log("  • NO Expo Router");
+
+  console.log("\nNext steps:");
   console.log(`  cd ${appName}`);
   console.log("  npm install");
   console.log("  npx expo start");
+
+  console.log("\nAdd Gluestack components manually:");
+  console.log("  npx gluestack-ui add box");
+  console.log("  npx gluestack-ui add text");
+  console.log("  npx gluestack-ui add button");
 }
 
 main();
